@@ -1,9 +1,15 @@
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.Map.Entry;
 
 public class SimulateurCourse 
 {
 	public static void main(String[] args) 
 	{
+		HashMap<String , IdentityHashMap<Integer , Integer>> horseGenerateVariable = new HashMap<>();
 		Scanner scan = new Scanner(System.in);
 		Boolean continueBool = true;
 		
@@ -12,12 +18,14 @@ public class SimulateurCourse
 			System.out.println("combien de chevaux sont dans la course ? (12 a 20 chevaux) : ");
 			int horsesNumber = scan.nextInt();
 			
-			horsesNumber = verificationNumberHorses(horsesNumber, scan);
+			horsesNumber = verificationNumberHorsesFunction(horsesNumber, scan);
 			
 			System.out.println("quel est le type de couse ? (tierce, quarte, quinte) : ");
 			String runType = scan.next();
 			
-			runType = verificationType(runType, scan);
+			runType = verificationTypeFunction(runType, scan);
+			
+			System.out.println(horseNameFunction(horsesNumber, scan));
 			
 			System.out.println("voulez vous rejouez ? : ");
 			String continueAnswer = scan.next();
@@ -35,7 +43,7 @@ public class SimulateurCourse
 		scan.close();
 	}
 	
-	public static String verificationType ( String Type , Scanner scan)
+	public static String verificationTypeFunction ( String Type , Scanner scan)
 	{
 		while( !Type.equals("tierce") && !Type.equals("quarte") && !Type.equals("quinte"))
 		{
@@ -45,7 +53,7 @@ public class SimulateurCourse
 		return Type;
 	}
 	
-	public static int verificationNumberHorses ( int numberHorse , Scanner scan)
+	public static int verificationNumberHorsesFunction ( int numberHorse , Scanner scan)
 	{
 		while(numberHorse > 20 || numberHorse < 12 )
 		{
@@ -53,5 +61,20 @@ public class SimulateurCourse
 			numberHorse = scan.nextInt();
 		}
 		return numberHorse;
+	}
+	
+	public static HashMap<String , Integer> horseNameFunction ( int horseVerif , Scanner scan)
+	{
+		HashMap<String , Integer> horseGenerate = new HashMap<String, Integer>();
+		String[] horseName = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t"};
+		int horsesNumber = verificationNumberHorsesFunction(horseVerif, scan);
+		
+		for(int i = 0 ; i < horsesNumber ; i++ )
+		{
+			horseGenerate.put(horseName[i], i+1 );
+		}
+		
+		return horseGenerate;
+		
 	}
 }

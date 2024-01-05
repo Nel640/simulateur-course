@@ -1,55 +1,41 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class SimulateurCourse 
 {
 	public static void main(String[] args) 
 	{
-		HashMap<String , Integer> horseTabNameVariable = new HashMap<>();
-		ArrayList<Integer> horseTabSpeedVariable = new ArrayList<Integer>();	
-		ArrayList<Integer> horseTabDistanceVariable = new ArrayList<Integer>();
-		int timer = 0;
-		int tour = 0;
 		
 		Scanner scan = new Scanner(System.in);
-		Boolean continueBool = true;
 		
-		while(continueBool)
+		System.out.println("combien de chevaux sont dans la course ? (12 a 20 chevaux) : ");
+		int horsesNumber = scan.nextInt();
+		
+		horsesNumber = verificationNumberHorsesFunction(horsesNumber, scan);//test et return horses number
+		int[][] horsesInfos = new int[horsesNumber][2];// tableau 2D speed and distancia
+		
+		System.out.println("quel est le type de couse ? (tierce, quarte, quinte) : ");
+		String runType = scan.next();
+		
+		runType = verificationTypeFunction(runType, scan);//test and return run type
+		
+		int desResult = lancerDesDes(0, 5);
+		int tours = 0;
+		int timer = 0;
+		
+		for ( int[] distanciaHorse : horsesInfos)
 		{
-			System.out.println("combien de chevaux sont dans la course ? (12 a 20 chevaux) : ");
-			int horsesNumber = scan.nextInt();
 			
-			horsesNumber = verificationNumberHorsesFunction(horsesNumber, scan);//test
+				//pour chaque cheval 
+				desResult = lancerDesDes(0, 5);//lance le des 
+				System.out.println(desResult);
+				int resultSpeed = incrementSpeedFunction(desResult, tours, horsesNumber);//incremente vitesse et distance
+				int distanciaResult = incrementDistanciaFunction(horsesInfos , distanciaHorse[0]);
+				distanciaHorse[0] += resultSpeed;
+				distanciaHorse[1] += distanciaResult;
+				tours++;
+				timer += 10; 
 			
-			System.out.println("quel est le type de couse ? (tierce, quarte, quinte) : ");
-			String runType = scan.next();
-			
-			runType = verificationTypeFunction(runType, scan);//test
-			
-			//valeur principal
-			horseTabNameVariable = horsesTabNameFunction(horsesNumber, scan);//tableau name et values qui servent de key
-			horseTabSpeedVariable = horsesTabSpeedFunction(horsesNumber);// tableau initialisation vitesse a zero
-			horseTabDistanceVariable = horsesTabDistanceFunction(horsesNumber);//tableau initialisation distance a zero
-			int lancerDes = desGenerate(0, 5);
-			desGenerate(0,5);
-			horseTabSpeedVariable = incrementSpeed(lancerDes, horsesNumber, tour);
-			System.out.println(lancerDes);
-			System.out.println(horseTabSpeedVariable);
-			
-			System.out.println("voulez vous rejouez ? : ");
-			String continueAnswer = scan.next();
-			
-			if(continueAnswer.toUpperCase().equals("O"))
-			{
-				continueBool = true;
-			}
-			else 
-			{
-				continueBool = false;
-				System.out.println("a bientot ");
-			}
 		}
 		scan.close();
 	}
@@ -74,43 +60,7 @@ public class SimulateurCourse
 		return numberHorse;
 	}
 	
-	public static HashMap<String , Integer> horsesTabNameFunction ( int horseVerif , Scanner scan)
-	{
-		HashMap<String , Integer> horseGenerate = new HashMap<String, Integer>();
-		String[] horseName = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t"};
-		int horsesNumber = verificationNumberHorsesFunction(horseVerif, scan);
-		
-		for(int i = 0 ; i < horsesNumber ; i++ )
-		{
-			horseGenerate.put(horseName[i], i );
-		}
-		
-		return horseGenerate;
-	}
-	
-	public static ArrayList<Integer> horsesTabSpeedFunction (int horsesNumber)
-	{
-		ArrayList<Integer> horsesSpeed = new ArrayList<Integer>();	
-		
-		for( int i = 0 ; i < horsesNumber ; i++)
-		{
-			horsesSpeed.add(0);
-		}
-		return horsesSpeed;
-	}
-	
-	public static ArrayList<Integer> horsesTabDistanceFunction (int horsesNumber)
-	{
-		ArrayList<Integer> horsesDistance = new ArrayList<Integer>();	
-		
-		for( int i = 0 ; i < horsesNumber ; i++)
-		{
-			horsesDistance.add(0);
-		}
-		return horsesDistance;
-	}
-	
-	public static int desGenerate ( int nbMin , int nbMax)
+	public static int lancerDesDes ( int nbMin , int nbMax)
 	{
 			 Random random = new Random();
 			 int nb;
@@ -118,21 +68,57 @@ public class SimulateurCourse
 			 return nb;
 	}
 	
-	public static ArrayList<Integer> incrementSpeed ( int lancerDes , int horsesNumber , int tour)
+	public static int incrementSpeedFunction ( int desResult , int tours , int horsesNumber)
 	{
-		ArrayList<Integer> tabSpeed = horsesTabSpeedFunction(horsesNumber);// tableau initialisation vitesse a zero
+		int speedResult = 0 ;
 		
-		for( int speed : tabSpeed )
+		if(desResult == 1 && (tours == 3 || tours == 4) || 
+		   desResult == 2 && (tours == 5 || tours == 6))
 		{
-			if(tour == 0 && lancerDes == 1)
+			speedResult -= 1;
+		}
+		else if(desResult == 1 && (tours == 5 || tours == 6 ))
+		{
+			speedResult -= 2;
+		}
+		else if (desResult == 2 && tours == 0  || 
+		         desResult == 3 && (tours == 0 || tours == 1 || tours == 2)||
+		         desResult == 4 && (tours == 0 || tours == 1 || tours == 2 || tours == 3) ||
+		         desResult == 5 && (tours == 1 || tours == 2 || tours == 3 || tours == 4) ||
+		         desResult == 6 && (tours == 3 || tours == 4 || tours == 5))
+		{
+			speedResult += 1 ; 
+		}
+		else if (desResult == 5 && tours == 0  ||
+				 desResult == 6 && (tours == 0 || tours == 1 || tours == 2))
+		{
+			speedResult += 2;
+		}
+			
+		return speedResult;
+	}
+	
+	public static int incrementDistanciaFunction ( int[][] horsesInfos , int horse)
+	{
+		int distanciaResult = 0;
+		
+		HashMap<Integer, Integer> horsesDistances = new HashMap<Integer, Integer>();
+		horsesDistances.put(0 , 0);
+		horsesDistances.put(1 , 23);
+		horsesDistances.put(2 , 46);
+		horsesDistances.put(3 , 69);
+		horsesDistances.put(4 , 92);
+		horsesDistances.put(5 , 115);
+		horsesDistances.put(6 , 138);
+		
+		for(Entry<Integer, Integer> entry : horsesDistances.entrySet())
+		{
+			if( horse == entry.getKey())
 			{
-				speed += 0;
-			}
-			else if ( tour == 0 && (lancerDes == 2 ||lancerDes == 3 || lancerDes == 4))
-			{
-				speed += 1;
+				distanciaResult = entry.getValue();
+				System.out.println("entry "+entry.getValue());
 			}
 		}
-		return tabSpeed;
+		return distanciaResult;
 	}
 }

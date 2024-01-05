@@ -1,15 +1,15 @@
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
-import java.util.Map.Entry;
 
 public class SimulateurCourse 
 {
 	public static void main(String[] args) 
 	{
-		HashMap<String , IdentityHashMap<Integer , Integer>> horseGenerateVariable = new HashMap<>();
+		HashMap<String , Integer> horseGenerateVariable = new HashMap<>();
+		
 		Scanner scan = new Scanner(System.in);
 		Boolean continueBool = true;
 		
@@ -25,7 +25,8 @@ public class SimulateurCourse
 			
 			runType = verificationTypeFunction(runType, scan);
 			
-			System.out.println(horseNameFunction(horsesNumber, scan));
+			horseGenerateVariable = horseNameFunction(horsesNumber, scan);
+			System.out.println(horsesSpeedDistanciaFunction(horsesNumber));
 			
 			System.out.println("voulez vous rejouez ? : ");
 			String continueAnswer = scan.next();
@@ -75,6 +76,16 @@ public class SimulateurCourse
 		}
 		
 		return horseGenerate;
+	}
+	
+	public static ArrayList<Integer> horsesSpeedDistanciaFunction (int horsesNumber)
+	{
+		ArrayList<Integer> horsesvalues = new ArrayList<Integer>();	
 		
+		for( int i = 0 ; i < horsesNumber ; i++)
+		{
+			horsesvalues.add(0);
+		}
+		return horsesvalues;
 	}
 }
